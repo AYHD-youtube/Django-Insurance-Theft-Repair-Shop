@@ -26,6 +26,7 @@ class Insurance (models.Model):
     description = models.TextField()
     is_claimed = models.BooleanField(default=False)
     is_approved = models.BooleanField(default=False)
+    is_declined = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username

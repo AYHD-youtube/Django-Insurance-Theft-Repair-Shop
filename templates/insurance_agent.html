@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>
+    Your Insurance's
+</title>
+</head>
+<body>
+
+{% if is_pending %}
+    <h1>
+        Pending Insurance's
+    </h1>
+    
+        {% for pending in is_pending %}
+            <p>
+                {{ pending.product.name }}
+            </p>
+            <p>
+                {{ pending.product.price }}
+            </p>
+            {% comment %} approve or disaprove {% endcomment %}
+            <form action="approve_insurance" method="post">
+                <input type="hidden" name="insurance_id" value="{{ pending.id }}">
+                <input type="submit" value="Approve">
+            </form>
+            <form action="disapprove_insurance" method="post">
+                <input type="hidden" name="insurance_id" value="{{ pending.id }}">
+                <input type="submit" value="Disapprove">
+            </form>
+
+        {% endfor %}
+{% endif %}
+    
+{% if is_approved %}
+        <h1>
+            Approved Insurance's
+        </h1>
+        
+        {% for approved in is_approved %}
+            <p>
+                {{ approved.product.name }}
+            </p>
+            <p>
+                {{ approved.product.price }}
+            </p>
+        {% endfor %}
+{% endif %}
+
+{% if is_declined %}
+        <h1>
+            Declined Insurance's
+        </h1>
+        
+        {% for declined in is_declined %}
+            <p>
+                {{ declined.product.name }}
+            </p>
+            <p>
+                {{ declined.product.price }}
+            </p>
+            <p>
+                {{ declined.description }}
+            </p>
+        {% endfor %}
+{% endif %}
+
+</body>
+</html>

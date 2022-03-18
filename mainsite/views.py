@@ -3,6 +3,8 @@ from django.shortcuts import render
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
+import random
+
 
 # Create your views here.
 def index(request):
@@ -13,8 +15,7 @@ def shop(request):
     return render(request, 'shop.html', {'products': products})
 
 def insurance(request):
-    insurances = Insurance.objects.all()
-    return render(request, 'insurance.html', {'insurances': insurances})
+    return render(request, 'insurance.html')
 
 def police(request):
     return render(request, 'police.html')
@@ -41,15 +42,65 @@ def buy_login(request):
         product = Product.objects.get(id=request.POST.get('product_id'))
         if not user:     
             user = User.objects.create(email=email, password=password, is_customer=True, username=email)
+            user.set_password(password)
+            user.save()
+            # sucessfully bought product
+            Insurance.objects.create(user=user, product=product, description='Bought product', is_claimed=False, is_approved=False, is_declined=False)
+            hash_value = random.getrandbits(128)
+            print("hash value: %032x" % hash_value)
+            return render(request, 'reciept.html', {'user': user, 'product': product})        
         else:
             user = authenticate(username=email, password=password)
             if user is not None:
                 if not user.is_customer:
                     return render(request, 'buy.html', {'error': 'You are not a customer!', 'product': product})
                 else:
+                    # sucessfully bought product
+                    Insurance.objects.create(user=user, product=product, description='Bought product', is_claimed=False, is_approved=False, is_declined=False)
+                    hash_value = random.getrandbits(128)
+                    print("hash value: %032x" % hash_value)
                     return render(request, 'reciept.html', {'user': user, 'product': product})
             else:
                 return render(request, 'buy.html', {'error': 'Wrong email or password!', 'product': product})
     else:
         return render(request, 'buy.html', {'error': 'Wrong email or password!', 'product': product})
+
+@csrf_exempt      
+def insurance_login(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = User.objects.filter(email=email)
         
+        if not user:     
+            return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
+        
+        user = authenticate(username=email, password=password)
+
+        if user is not None:
+            if user.is_insurance:
+                # all pending claim
+                is_pending = Insurance.objects.filter(user=user, is_claimed=True, is_approved=False, is_declined=False)
+                # all approved claim
+                is_approved = Insurance.objects.filter(user=user, is_claimed=True, is_approved=True, is_declined=False)
+                # all declined claim
+                is_declined = Insurance.objects.filter(user=user, is_claimed=True, is_approved=False, is_declined=True)
+                return render(request, 'insurance_agent.html', {'is_pending': is_pending, 'is_approved': is_approved, 'is_declined': is_declined})
+                
+            else:
+                # all pending claims
+                is_pending = Insurance.objects.filter(user=user, is_claimed=True, is_approved=False, is_declined=False)
+                # all is_approved = True
+                is_approved = Insurance.objects.filter(user=user, is_approved=True)
+                # all isurance bought not claimed and approved
+                is_bought = Insurance.objects.filter(user=user, is_claimed=False, is_approved=False, is_declined=False)
+                # all declined claims
+                is_declined = Insurance.objects.filter(user=user, is_declined=True)
+
+                return render(request, 'insurance_customer.html', {'user': user, 'is_pending': is_pending, 'is_approved': is_approved, 'is_bought': is_bought
+                , 'is_declined': is_declined})
+
+    return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
+
+
+
