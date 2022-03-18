@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>
+    Shop
+</title>
+</head>
+<body>
+<h1>
+    Welcome to the shop
+</h1>
+{% for product in products %}
+<div>
+    <h2>
+        {{ product.name }}
+    </h2>
+    <p>
+        {{ product.description }}
+    </p>
+    <p>
+        {{ product.price }}
+    </p>
+    <p>
+        <img src="{{ product.image.path }}" width=300px>
+    </p>
+</div>
+<br>
+{% endfor %}
+</body>
+</html>
