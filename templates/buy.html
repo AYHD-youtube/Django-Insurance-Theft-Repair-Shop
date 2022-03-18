@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>
+    {{product.name}}
+</title>
+</head>
+<body>
+    {% if error %}
+        <p>{{error}}</p>
+    {% endif %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{{product.name}}</h1>
+                <p>{{product.description}}</p>
+                <p>{{product.price}}</p>
+                <img src="{{ product.image.url }}" width=100px>
+            </div>
+        </div>
+    </div>
+{% comment %} buy with insurance button {% endcomment %}
+<form action="login/" method="POST">
+    <input type="email" name="email" placeholder="email">
+    <input type="password" name="password" placeholder="password">
+    <input type="hidden" name="product_id" value="{{product.id}}">
+    <input type="submit" value="Login OR Sign Up And Buy With Insurance">
+</form>
+<a href="/">Home</a>
+</body>
+</html>

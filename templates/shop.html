@@ -20,10 +20,16 @@
         {{ product.price }}
     </p>
     <p>
-        <img src="{{ product.image.path }}" width=300px>
+        <img src="{{ product.image.url }}" width=100px>
     </p>
+    {% comment %} buy button {% endcomment %}
+    <form action="buy/" method="post">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <input type="submit" value="Buy">
+    </form>
 </div>
 <br>
 {% endfor %}
+<a href="/">Home</a>
 </body>
 </html>
