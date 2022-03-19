@@ -5,7 +5,6 @@ class User(AbstractUser):
     is_police = models.BooleanField(default=False)
     is_repair = models.BooleanField(default=False)
     is_insurance = models.BooleanField(default=False)
-    is_shop = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
 
     def __str__(self):
@@ -31,7 +30,7 @@ class Insurance (models.Model):
         ('police', 'police'),
         ('repair', 'repair'),
     )
-    claim_type = models.CharField(max_length=200, choices=CLAIM_TYPES, default=None, blank=True)
+    claim_type = models.CharField(max_length=200, choices=CLAIM_TYPES, default=None, blank=True, null=True)
 
     def __str__(self):
         return self.user.username

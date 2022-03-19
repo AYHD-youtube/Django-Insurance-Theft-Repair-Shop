@@ -25,11 +25,11 @@
                 {{ pending.claim_type }}
             </p>
             {% comment %} approve or disaprove {% endcomment %}
-            <form action="approve_insurance/" method="post">
+            <form action="approve/" method="post">
                 <input type="hidden" name="insurance_id" value="{{ pending.id }}">
                 <input type="submit" value="Approve">
             </form>
-            <form action="disapprove_insurance/" method="post">
+            <form action="disapprove/" method="post">
                 <input type="hidden" name="insurance_id" value="{{ pending.id }}">
                 <input type="submit" value="Disapprove">
             </form>

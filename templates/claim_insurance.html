@@ -13,6 +13,11 @@ Insurance Claim
     <label for="reason">Reason for claim:</label>
     <input type="hidden" name="insurance_id" value="{{ insurance.id }}">
     <input type="text" name="reason" id="reason" />
+    {% comment %} radio buutton with option repair or police {% endcomment %}
+    <label for="repair">Repair:</label>
+    <input type="radio" name="type" id="repair" value="repair" />
+    <label for="police">Police:</label>
+    <input type="radio" name="type" id="police" value="police" />
     <input type="submit" value="Submit" />
 </form>
 <a href="/">Home</a>

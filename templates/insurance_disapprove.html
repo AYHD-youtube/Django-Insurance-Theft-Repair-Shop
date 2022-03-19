@@ -1,0 +1,23 @@
+<html>
+<head>
+<title>
+    Insurance Disapprove
+</title>
+</head>
+<body>
+    {% comment %} h1 {% endcomment %}
+    <h1>
+        Insurance Disapprove
+    </h1>
+    <h2>
+        {{ insurance.product.name }} - 
+        {{ insurance.description }}
+    </h2>
+<form action="disapprove/" method="post">
+    {% comment %} reason for disapprove {% endcomment %}
+    <input type="text" name="reason" placeholder="reason for disapprove">
+    <input type="hidden" name="insurance_id" value="{{ insurance.id }}">
+    <input type="submit" value="Disapprove">
+</form>
+</body>
+</html>

@@ -1,4 +1,3 @@
-import email
 from django.shortcuts import render
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
@@ -80,11 +79,11 @@ def insurance_login(request):
         if user is not None:
             if user.is_insurance:
                 # all pending claim
-                is_pending = Insurance.objects.filter(user=user, is_claimed=True, is_approved=False, is_declined=False)
+                is_pending = Insurance.objects.filter( is_claimed=True, is_approved=False, is_declined=False)
                 # all approved claim
-                is_approved = Insurance.objects.filter(user=user, is_claimed=True, is_approved=True, is_declined=False)
+                is_approved = Insurance.objects.filter(is_claimed=True, is_approved=True, is_declined=False)
                 # all declined claim
-                is_declined = Insurance.objects.filter(user=user, is_claimed=True, is_approved=False, is_declined=True)
+                is_declined = Insurance.objects.filter(is_claimed=True, is_approved=False, is_declined=True)
                 return render(request, 'insurance_agent.html', {'is_pending': is_pending, 'is_approved': is_approved, 'is_declined': is_declined})
 
             else:
@@ -116,10 +115,56 @@ def claim_submit(request):
     if request.method == 'POST':
         insurance_id = request.POST.get('insurance_id')
         description = request.POST.get('reason')
+        claim_type = request.POST.get('type')
         insurance = Insurance.objects.get(id=insurance_id)
         insurance.is_claimed = True
         insurance.description = description
+        insurance.claim_type = claim_type
         insurance.save()
         return render(request, 'claim.html', {'insurance': insurance})
+    else:
+        return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
+
+@csrf_exempt
+def insurance_disapprove(request):
+    if request.method == 'POST':
+        insurance_id = request.POST.get('insurance_id')
+        insurance = Insurance.objects.get(id=insurance_id)
+        return render(request, 'insurance_disapprove.html', {'insurance': insurance})
+    else:
+        return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
+
+@csrf_exempt
+def insurance_approve(request):
+    if request.method == 'POST':
+        insurance_id = request.POST.get('insurance_id')
+        insurance = Insurance.objects.get(id=insurance_id)
+        return render(request, 'insurance_approve.html', {'insurance': insurance})
+    else:
+        return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
+
+@csrf_exempt
+def approve(request):
+    if request.method == 'POST':
+        insurance_id = request.POST.get('insurance_id')
+        description = request.POST.get('reason')
+        insurance = Insurance.objects.get(id=insurance_id)
+        insurance.is_approved = True
+        insurance.description = insurance.description + description
+        insurance.save()
+        return render(request, 'approved.html', {'insurance': insurance})
+    else:
+        return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
+
+@csrf_exempt
+def disapprove(request):
+    if request.method == 'POST':
+        insurance_id = request.POST.get('insurance_id')
+        description = request.POST.get('reason')
+        insurance = Insurance.objects.get(id=insurance_id)
+        insurance.is_declined = True
+        insurance.description = insurance.description + description
+        insurance.save()
+        return render(request, 'disapproved.html', {'insurance': insurance})
     else:
         return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
