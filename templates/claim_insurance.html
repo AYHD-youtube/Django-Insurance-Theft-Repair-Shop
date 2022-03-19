@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>
+Insurance Claim
+</title>
+</head>
+<body>
+<h1>
+    {{ insurance.product.name }} Insurance Claim
+</h1>
+{% comment %} Enter reason form {% endcomment %}
+<form action="claim_submit/" method="post">
+    <label for="reason">Reason for claim:</label>
+    <input type="hidden" name="insurance_id" value="{{ insurance.id }}">
+    <input type="text" name="reason" id="reason" />
+    <input type="submit" value="Submit" />
+</form>
+<a href="/">Home</a>
+</body>
+</html>

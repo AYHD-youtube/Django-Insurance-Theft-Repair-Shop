@@ -86,7 +86,7 @@ def insurance_login(request):
                 # all declined claim
                 is_declined = Insurance.objects.filter(user=user, is_claimed=True, is_approved=False, is_declined=True)
                 return render(request, 'insurance_agent.html', {'is_pending': is_pending, 'is_approved': is_approved, 'is_declined': is_declined})
-                
+
             else:
                 # all pending claims
                 is_pending = Insurance.objects.filter(user=user, is_claimed=True, is_approved=False, is_declined=False)
@@ -102,5 +102,24 @@ def insurance_login(request):
 
     return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
 
-
-
+@csrf_exempt
+def claim_insurance(request):
+    if request.method == 'POST':
+        insurance_id = request.POST.get('insurance_id')
+        insurance = Insurance.objects.get(id=insurance_id)
+        return render(request, 'claim_insurance.html', {'insurance': insurance})
+    else:
+        return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
+    
+@csrf_exempt
+def claim_submit(request):
+    if request.method == 'POST':
+        insurance_id = request.POST.get('insurance_id')
+        description = request.POST.get('reason')
+        insurance = Insurance.objects.get(id=insurance_id)
+        insurance.is_claimed = True
+        insurance.description = description
+        insurance.save()
+        return render(request, 'claim.html', {'insurance': insurance})
+    else:
+        return render(request, 'insurance.html', {'error': 'Wrong email or password!'})

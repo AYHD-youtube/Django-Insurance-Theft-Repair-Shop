@@ -18,8 +18,8 @@
             {{ bought.product.price }}
         </p>
         {% comment %} claim insurance button {% endcomment %}
-        <form action="claim_insurance" method="post">
-            <input type="hidden" name="bought_id" value="{{ bought.id }}">
+        <form action="claim_insurance/" method="post">
+            <input type="hidden" name="insurance_id" value="{{ bought.id }}">
             <input type="submit" value="Claim Insurance">
         </form>
     {% endfor %}
@@ -52,6 +52,9 @@
             <p>
                 {{ approved.product.price }}
             </p>
+            <p>
+                {{ approved.claim_type }}
+            </p>
         {% endfor %}
 {% endif %}
 
@@ -70,8 +73,11 @@
             <p>
                 {{ declined.description }}
             </p>
+            <p>
+                {{ declined.claim_type }}   
+            </p>
         {% endfor %}
 {% endif %}
-
+<a href="/">Home</a>
 </body>
 </html>

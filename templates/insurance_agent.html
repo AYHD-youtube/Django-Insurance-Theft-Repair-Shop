@@ -18,12 +18,18 @@
             <p>
                 {{ pending.product.price }}
             </p>
+            <p>
+                {{ pending.description }}
+            </p>
+            <p>
+                {{ pending.claim_type }}
+            </p>
             {% comment %} approve or disaprove {% endcomment %}
-            <form action="approve_insurance" method="post">
+            <form action="approve_insurance/" method="post">
                 <input type="hidden" name="insurance_id" value="{{ pending.id }}">
                 <input type="submit" value="Approve">
             </form>
-            <form action="disapprove_insurance" method="post">
+            <form action="disapprove_insurance/" method="post">
                 <input type="hidden" name="insurance_id" value="{{ pending.id }}">
                 <input type="submit" value="Disapprove">
             </form>
@@ -43,6 +49,12 @@
             <p>
                 {{ approved.product.price }}
             </p>
+            <p>
+                {{ approved.description }}
+            </p>
+            <p>
+                {{ approved.claim_type }}
+            </p>
         {% endfor %}
 {% endif %}
 
@@ -61,8 +73,11 @@
             <p>
                 {{ declined.description }}
             </p>
+            <p>
+                {{ declined.claim_type }}
+            </p>
         {% endfor %}
 {% endif %}
-
+<a href="/">Home</a>
 </body>
 </html>

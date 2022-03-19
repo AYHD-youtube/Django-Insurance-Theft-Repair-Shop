@@ -11,4 +11,6 @@ urlpatterns = [
     path('shop/buy/', views.buy, name='buy'),
     path('shop/buy/login/', views.buy_login, name='shop_buy_login'),
     path('insurance/login/', views.insurance_login, name='insurance_login'),
+    path('insurance/login/claim_insurance/', views.claim_insurance, name='claim_insurance'),
+    path('insurance/login/claim_insurance/claim_submit/', views.claim_submit, name='claim_submit'),
 ]

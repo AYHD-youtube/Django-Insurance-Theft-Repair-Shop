@@ -27,6 +27,11 @@ class Insurance (models.Model):
     is_claimed = models.BooleanField(default=False)
     is_approved = models.BooleanField(default=False)
     is_declined = models.BooleanField(default=False)
+    CLAIM_TYPES = (
+        ('police', 'police'),
+        ('repair', 'repair'),
+    )
+    claim_type = models.CharField(max_length=200, choices=CLAIM_TYPES, default=None, blank=True)
 
     def __str__(self):
         return self.user.username
