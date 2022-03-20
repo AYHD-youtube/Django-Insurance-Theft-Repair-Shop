@@ -21,4 +21,6 @@ urlpatterns = [
     path('repair/login/', views.repair_login, name='repair_login'),
     path('repair/login/approved/', views.repair_approved, name='repair_approved'),
     path('repair/login/declined/', views.repair_declined, name='repair_declined'),
+    path('police/login/approved/', views.police_approved, name='police_approved'),
+    path('police/login/declined/', views.police_declined, name='police_declined'),
 ]

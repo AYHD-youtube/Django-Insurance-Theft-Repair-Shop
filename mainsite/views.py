@@ -260,3 +260,32 @@ def repair_declined(request):
     else:
         return render(request, 'police.html', {'error': 'Wrong email or password!'})
 
+@csrf_exempt
+def police_approved(request):
+    if request.method == 'POST':
+        theft_id = request.POST.get('theft_id')
+        theft = Theft.objects.get(id=theft_id)
+        theft.is_approved = True
+        theft.save()
+
+        hash_value = random.getrandbits(128)
+        print("hash value: %032x" % hash_value)
+    
+        return render(request, 'police_approved.html', {'theft': theft})
+    else:
+        return render(request, 'police.html', {'error': 'Wrong email or password!'})
+
+@csrf_exempt
+def police_declined(request):
+    if request.method == 'POST':
+        theft_id = request.POST.get('theft_id')
+        theft = Theft.objects.get(id=theft_id)
+        theft.is_declined = True
+        theft.save()
+
+        hash_value = random.getrandbits(128)
+        print("hash value: %032x" % hash_value)
+    
+        return render(request, 'police_declined.html', {'theft': theft})
+    else:
+        return render(request, 'police.html', {'error': 'Wrong email or password!'})
