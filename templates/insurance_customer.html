@@ -37,6 +37,12 @@
             <p>
                 {{ pending.product.price }}
             </p>
+            <p>
+                {{ pending.description }}
+            </p>
+            <p>
+                {{ pending.claim_type }}
+            </p>
         {% endfor %}
 {% endif %}
     
@@ -52,6 +58,8 @@
             <p>
                 {{ approved.product.price }}
             </p>
+            <p>
+                {{ approved.description }}
             <p>
                 {{ approved.claim_type }}
             </p>

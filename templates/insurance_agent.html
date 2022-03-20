@@ -24,16 +24,6 @@
             <p>
                 {{ pending.claim_type }}
             </p>
-            {% comment %} approve or disaprove {% endcomment %}
-            <form action="approve/" method="post">
-                <input type="hidden" name="insurance_id" value="{{ pending.id }}">
-                <input type="submit" value="Approve">
-            </form>
-            <form action="disapprove/" method="post">
-                <input type="hidden" name="insurance_id" value="{{ pending.id }}">
-                <input type="submit" value="Disapprove">
-            </form>
-
         {% endfor %}
 {% endif %}
     
@@ -55,6 +45,10 @@
             <p>
                 {{ approved.claim_type }}
             </p>
+            <form action="approve/" method="post">
+                <input type="hidden" name="insurance_id" value="{{ pending.id }}">
+                <input type="submit" value="Approve">
+            </form>
         {% endfor %}
 {% endif %}
 
@@ -76,6 +70,10 @@
             <p>
                 {{ declined.claim_type }}
             </p>
+            <form action="disapprove/" method="post">
+                <input type="hidden" name="insurance_id" value="{{ pending.id }}">
+                <input type="submit" value="Disapprove">
+            </form>
         {% endfor %}
 {% endif %}
 <a href="/">Home</a>

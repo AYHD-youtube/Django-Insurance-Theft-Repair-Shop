@@ -23,9 +23,13 @@
             <p>
                 {{ pending.insurance.description }}
             </p>
-            <form action="completed/" method="post">
+            <form action="approved/" method="post">
                 <input type="hidden" name="repair_id" value="{{ pending.id }}">
-                <input type="submit" value="Completed">
+                <input type="submit" value="approved">
+            </form>
+            <form action="declined/" method="post">
+                <input type="hidden" name="repair_id" value="{{ pending.id }}">
+                <input type="submit" value="declined">
             </form>
         {% endfor %}
 {% endif %}

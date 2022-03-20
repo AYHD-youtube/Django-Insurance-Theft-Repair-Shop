@@ -103,9 +103,15 @@ def insurance_login(request):
                 # all pending claim
                 is_pending = Insurance.objects.filter( is_claimed=True, is_approved=False, is_declined=False)
                 # all approved claim
-                is_approved = Insurance.objects.filter(is_claimed=True, is_approved=True, is_declined=False)
+                # all theft and repair is_approved = True 
+                is_approved = list(Repair.objects.filter(is_approved=True))+list(Theft.objects.filter(is_approved=True))
+                for completed in range(len(is_approved)):
+                    is_approved[completed] = is_approved[completed].insurance
                 # all declined claim
-                is_declined = Insurance.objects.filter(is_claimed=True, is_approved=False, is_declined=True)
+                is_declined = list(Repair.objects.filter(is_declined=True))+list(Theft.objects.filter(is_declined=True))
+                for declined in range(len(is_declined)):
+                    is_declined[declined] = is_declined[declined].insurance
+
                 return render(request, 'insurance_agent.html', {'is_pending': is_pending, 'is_approved': is_approved, 'is_declined': is_declined})
 
             else:
@@ -143,7 +149,14 @@ def claim_submit(request):
         insurance.description = description
         insurance.claim_type = claim_type
         insurance.save()
-        
+
+        if claim_type == 'police':
+            theft = Theft.objects.create(insurance=insurance, description=description,
+                is_approved=False, is_declined=False)
+        else :
+            repair = Repair.objects.create(insurance=insurance, description=description,
+                is_approved=False, is_declined=False)
+
         hash_value = random.getrandbits(128)
         print("hash value: %032x" % hash_value)
         
@@ -156,7 +169,9 @@ def insurance_disapprove(request):
     if request.method == 'POST':
         insurance_id = request.POST.get('insurance_id')
         insurance = Insurance.objects.get(id=insurance_id)
-        return render(request, 'insurance_disapprove.html', {'insurance': insurance})
+        insurance.is_declined = True
+        insurance.save()
+        return render(request, 'disapproved.html', {'insurance': insurance})
     else:
         return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
 
@@ -165,45 +180,9 @@ def insurance_approve(request):
     if request.method == 'POST':
         insurance_id = request.POST.get('insurance_id')
         insurance = Insurance.objects.get(id=insurance_id)
-        return render(request, 'insurance_approve.html', {'insurance': insurance})
-    else:
-        return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
-
-@csrf_exempt
-def approve(request):
-    if request.method == 'POST':
-        insurance_id = request.POST.get('insurance_id')
-        description = request.POST.get('reason')
-        insurance = Insurance.objects.get(id=insurance_id)
         insurance.is_approved = True
-        insurance.description = insurance.description + description
         insurance.save()
-        if insurance.claim_type == 'police':
-            theft = Theft.objects.create(insurance=insurance, description=insurance.description, is_solved = False)
-        else :
-            repair = Repair.objects.create(insurance=insurance, description=insurance.description, is_completed = False)
-
-        hash_value = random.getrandbits(128)
-        print("hash value: %032x" % hash_value)
-        
         return render(request, 'approved.html', {'insurance': insurance})
-    else:
-        return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
-
-@csrf_exempt
-def disapprove(request):
-    if request.method == 'POST':
-        insurance_id = request.POST.get('insurance_id')
-        description = request.POST.get('reason')
-        insurance = Insurance.objects.get(id=insurance_id)
-        insurance.is_declined = True
-        insurance.description = insurance.description + description
-        insurance.save()
-
-        hash_value = random.getrandbits(128)
-        print("hash value: %032x" % hash_value)
-
-        return render(request, 'disapproved.html', {'insurance': insurance})
     else:
         return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
 
@@ -222,26 +201,11 @@ def police_login(request):
         if user is not None:
             if user.is_police:
                 # all pending cases
-                is_pending = Theft.objects.filter(is_solved=False)
+                is_pending = Theft.objects.filter(is_approved=False, is_declined=False)
                 # all solved cases
-                is_solved = Theft.objects.filter(is_solved=True)
+                is_solved = Theft.objects.filter(is_approved=True)|Theft.objects.filter(is_declined=True)
                 return render(request, 'police_agent.html', {'is_pending': is_pending, 'is_solved': is_solved})
         
-        return render(request, 'police.html', {'error': 'Wrong email or password!'})
-
-@csrf_exempt
-def solved(request):
-    if request.method == 'POST':
-        theft_id = request.POST.get('theft_id')
-        theft = Theft.objects.get(id=theft_id)
-        theft.is_solved = True
-        theft.save()
-
-        hash_value = random.getrandbits(128)
-        print("hash value: %032x" % hash_value)
-
-        return render(request, 'solved.html', {'theft': theft})
-    else:
         return render(request, 'police.html', {'error': 'Wrong email or password!'})
 
 @csrf_exempt
@@ -259,24 +223,40 @@ def repair_login(request):
         if user is not None:
             if user.is_repair:
                 # all pending cases
-                is_pending = Repair.objects.filter(is_completed=False)
+                is_pending = Repair.objects.filter(is_approved=False, is_declined=False)
                 # all solved cases
-                is_completed = Repair.objects.filter(is_completed=True)
+                is_completed = Repair.objects.filter(is_approved=True)|Repair.objects.filter(is_declined=True)
                 return render(request, 'repair_agent.html', {'is_pending': is_pending, 'is_completed': is_completed})
         
         return render(request, 'repair.html', {'error': 'Wrong email or password!'})
 
 @csrf_exempt
-def completed(request):
+def repair_approved(request):
     if request.method == 'POST':
         repair_id = request.POST.get('repair_id')
         repair = Repair.objects.get(id=repair_id)
-        repair.is_completed = True
+        repair.is_approved = True
         repair.save()
 
         hash_value = random.getrandbits(128)
         print("hash value: %032x" % hash_value)
-
-        return render(request, 'completed.html', {'repair': repair})
+    
+        return render(request, 'repair_approved.html', {'repair': repair})
     else:
-        return render(request, 'repair.html', {'error': 'Wrong email or password!'})
+        return render(request, 'police.html', {'error': 'Wrong email or password!'})
+    
+@csrf_exempt    
+def repair_declined(request):
+    if request.method == 'POST':
+        repair_id = request.POST.get('repair_id')
+        repair = Repair.objects.get(id=repair_id)
+        repair.is_declined = True
+        repair.save()
+
+        hash_value = random.getrandbits(128)
+        print("hash value: %032x" % hash_value)
+    
+        return render(request, 'repair_declined.html', {'repair': repair})
+    else:
+        return render(request, 'police.html', {'error': 'Wrong email or password!'})
+
