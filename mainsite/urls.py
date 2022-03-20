@@ -10,6 +10,7 @@ urlpatterns = [
     path('repair/', views.repair, name='repair'),
     path('shop/buy/', views.buy, name='buy'),
     path('shop/buy/login/', views.buy_login, name='shop_buy_login'),
+    path('shop/buy/login/register/', views.buy_register, name='shop_buy_register'),
     path('insurance/login/', views.insurance_login, name='insurance_login'),
     path('insurance/login/approve/', views.insurance_approve, name='insurance_approve'),
     path('insurance/login/approve/approve/', views.approve, name='approve'),

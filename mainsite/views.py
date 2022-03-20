@@ -3,6 +3,7 @@ from .models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate
 import random
+from datetime import datetime, timedelta
 
 
 # Create your views here.
@@ -38,17 +39,19 @@ def buy_login(request):
         password = request.POST.get('password')
         user = User.objects.filter(email=email)
         product = Product.objects.get(id=request.POST.get('product_id'))
-        years = int(request.get('years'))
+        years = int(request.POST.get('years'))
+        end_date = datetime.now() + timedelta(days=365*years)
+
         if not user:     
             user = User.objects.create(email=email, password=password, is_customer=True, username=email)
             user.set_password(password)
             user.save()
             # sucessfully bought product
-            Insurance.objects.create(user=user, product=product, description='Bought product',
+            insurance = Insurance.objects.create(user=user, product=product, description='Bought product', end_date=end_date,
                     is_claimed=False, is_approved=False, is_declined=False, claim_type=None, duration=years)
             hash_value = random.getrandbits(128)
             print("hash value: %032x" % hash_value)
-            return render(request, 'reciept.html', {'user': user, 'product': product})        
+            return render(request, 'register.html', {'user': user, 'insurance': insurance})        
         else:
             user = authenticate(username=email, password=password)
             if user is not None:
@@ -56,16 +59,33 @@ def buy_login(request):
                     return render(request, 'buy.html', {'error': 'You are not a customer!', 'product': product})
                 else:
                     # sucessfully bought product
-                    Insurance.objects.create(user=user, product=product, description='Bought product',
+                    insurance = Insurance.objects.create(user=user, product=product, description='Bought product', end_date=end_date,
                         is_claimed=False, is_approved=False, is_declined=False, claim_type=None, duration=years)
                     hash_value = random.getrandbits(128)
                     print("hash value: %032x" % hash_value)
-                    return render(request, 'reciept.html', {'user': user, 'product': product})
+                    return render(request, 'reciept.html', {'user': user, 'insurance': insurance})
             else:
                 return render(request, 'buy.html', {'error': 'Wrong email or password!', 'product': product})
     else:
         return render(request, 'buy.html', {'error': 'Wrong email or password!', 'product': product})
 
+@csrf_exempt
+def buy_register(request):
+    if request.method == 'POST':
+        # get first name last name and phone number
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        phone = request.POST.get('phone_number')
+        user = User.objects.get(id=request.POST.get('user_id'))
+        insurance = Insurance.objects.get(id=request.POST.get('insurance_id'))
+        # update user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.phone = phone
+        user.save()
+        
+        return render(request, 'reciept.html', {'user': user, 'insurance': insurance})
+        
 @csrf_exempt      
 def insurance_login(request):
     if request.method == 'POST':

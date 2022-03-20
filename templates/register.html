@@ -1,0 +1,21 @@
+<html>
+<head>
+<title> 
+    Register
+</title>
+</head>
+<body>
+    {% comment %} get first name last name and phone number {% endcomment %}
+    <form action="register/" method="post">
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" id="first_name" value="{{ first_name }}" />
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" id="last_name" value="{{ last_name }}" />
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" name="phone_number" id="phone_number" value="{{ phone_number }}" />
+        <input type="hidden" name="insurance_id" value="{{ insurance.id }}">
+        <input type="hidden" name="user_id" value="{{ user.id }}">
+        <input type="submit" value="Register" />
+    </form>
+</body>
+</html>
