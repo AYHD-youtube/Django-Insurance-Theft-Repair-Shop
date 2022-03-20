@@ -1,0 +1,52 @@
+<html>
+<head>
+<title>
+    Your Repairs
+</title>
+</head>
+<body>
+<h1>
+    Your Pending Repairs
+</h1>
+{% if is_pending %}
+    <h1>
+        Pending Cases
+    </h1>
+    
+        {% for pending in is_pending %}
+            <p>
+                {{ pending.insurance.product.name }}
+            </p>
+            <p>
+                {{ pending.insurance.product.price }}
+            </p>
+            <p>
+                {{ pending.insurance.description }}
+            </p>
+            <form action="completed/" method="post">
+                <input type="hidden" name="repair_id" value="{{ pending.id }}">
+                <input type="submit" value="Completed">
+            </form>
+        {% endfor %}
+{% endif %}
+    
+{% if is_completed %}
+        <h1>
+            Completed Cases
+        </h1>
+        {% for completed in is_completed %}
+            <p>
+                {{ completed.insurance.product.name }}
+            </p>
+            <p>
+                {{ completed.insurance.product.price }}
+            </p>
+            <p>
+                {{ completed.insurance.description }}
+            </p>
+        {% endfor %}
+{% endif %}
+<a href="/">Home</a>
+</body>
+</html>
+        

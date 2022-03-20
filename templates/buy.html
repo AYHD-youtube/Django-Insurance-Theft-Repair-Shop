@@ -21,6 +21,12 @@
     </div>
 {% comment %} buy with insurance button {% endcomment %}
 <form action="login/" method="POST">
+    {% comment %} dropdown with years from 1 to 5 {% endcomment %}
+    <select name="years">
+        {% for year in range(1, 5) %}
+            <option value="{{year}}">{{year}}</option>
+        {% endfor %}
+    </select>
     <input type="email" name="email" placeholder="email">
     <input type="password" name="password" placeholder="password">
     <input type="hidden" name="product_id" value="{{product.id}}">

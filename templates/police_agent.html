@@ -1,0 +1,50 @@
+<html>
+<head>
+<title>
+    Your Cases
+</title>
+</head>
+<body>
+
+{% if is_pending %}
+    <h1>
+        Pending Cases
+    </h1>
+    
+        {% for pending in is_pending %}
+            <p>
+                {{ pending.insurance.product.name }}
+            </p>
+            <p>
+                {{ pending.insurance.product.price }}
+            </p>
+            <p>
+                {{ pending.insuranc.description }}
+            </p>
+            <form action="solved/" method="post">
+                <input type="hidden" name="theft_id" value="{{ pending.id }}">
+                <input type="submit" value="Solved">
+            </form>
+        {% endfor %}
+{% endif %}
+    
+{% if is_solved %}
+        <h1>
+            Solved Cases
+        </h1>
+        
+        {% for solved in is_solved %}
+            <p>
+                {{ solved.insurance.product.name }}
+            </p>
+            <p>
+                {{ solved.insurance.product.price }}
+            </p>
+            <p>
+                {{ solved.insurance.description }}
+            </p>
+        {% endfor %}
+{% endif %}
+<a href="/">Home</a>
+</body>
+</html>
