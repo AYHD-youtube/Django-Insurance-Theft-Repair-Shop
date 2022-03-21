@@ -36,6 +36,7 @@ class Insurance (models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     end_date = models.DateTimeField(blank=True, null=True)
+    is_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
@@ -58,3 +59,7 @@ class Theft (models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Blockchain (models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

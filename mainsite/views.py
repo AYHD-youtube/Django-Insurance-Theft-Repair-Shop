@@ -50,7 +50,8 @@ def buy_login(request):
             insurance = Insurance.objects.create(user=user, product=product, description='Bought product', end_date=end_date,
                     is_claimed=False, is_approved=False, is_declined=False, claim_type=None, duration=years)
             hash_value = random.getrandbits(128)
-            count = Insurance.objects.count() + Theft.objects.count() + Repair.objects.count()
+            Blockchain.objects.create()
+            count = Blockchain.objects.count()
             print("block height: ", count)
             print("hash value: %032x" % hash_value)
             return render(request, 'register.html', {'user': user, 'insurance': insurance})        
@@ -63,8 +64,12 @@ def buy_login(request):
                     # sucessfully bought product
                     insurance = Insurance.objects.create(user=user, product=product, description='Bought product', end_date=end_date,
                         is_claimed=False, is_approved=False, is_declined=False, claim_type=None, duration=years)
+
+                    Blockchain.objects.create()
+                    count = Blockchain.objects.count()
                     hash_value = random.getrandbits(128)
                     print("hash value: %032x" % hash_value)
+
                     return render(request, 'reciept.html', {'user': user, 'insurance': insurance})
             else:
                 return render(request, 'buy.html', {'error': 'Wrong email or password!', 'product': product})
@@ -131,7 +136,7 @@ def insurance_login(request):
                 # all completed claim
                 is_completed = Insurance.objects.filter(is_completed=True)
 
-                return render(request, 'insurance.html', {'user': user, 'is_pending': is_pending, 'is_approved': is_approved, 'is_declined': is_declined, 'is_completed': is_completed})
+                return render(request, 'insurance_agent.html', {'user': user, 'is_pending': is_pending, 'is_approved': is_approved, 'is_declined': is_declined, 'is_completed': is_completed})
             else:
                 # all pending claims
                 is_pending = Insurance.objects.filter(user=user, is_claimed=True, is_approved=False, is_declined=False)
@@ -176,7 +181,8 @@ def claim_submit(request):
                 is_approved=False, is_declined=False)
 
         hash_value = random.getrandbits(128)
-        count = Insurance.objects.count() + Theft.objects.count() + Repair.objects.count()
+        Blockchain.objects.create()
+        count = Blockchain.objects.count()
         print("block height: ", count)
         print("hash value: %032x" % hash_value)
         
@@ -192,6 +198,13 @@ def insurance_disapprove(request):
         insurance.is_declined = True
         insurance.is_completed = True
         insurance.save()
+
+        hash_value = random.getrandbits(128)
+        Blockchain.objects.create()
+        count = Blockchain.objects.count()
+        print("block height: ", count)
+        print("hash value: %032x" % hash_value)
+
         return render(request, 'disapproved.html', {'insurance': insurance})
     else:
         return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
@@ -204,6 +217,13 @@ def insurance_approve(request):
         insurance.is_approved = True
         insurance.is_completed = True
         insurance.save()
+
+        hash_value = random.getrandbits(128)
+        Blockchain.objects.create()
+        count = Blockchain.objects.count()
+        print("block height: ", count)
+        print("hash value: %032x" % hash_value)
+        
         return render(request, 'approved.html', {'insurance': insurance})
     else:
         return render(request, 'insurance.html', {'error': 'Wrong email or password!'})
@@ -260,7 +280,10 @@ def repair_approved(request):
         repair.is_approved = True
         repair.save()
 
+        Blockchain.objects.create()
+        count = Blockchain.objects.count()
         hash_value = random.getrandbits(128)
+        print("block height: ", count)
         print("hash value: %032x" % hash_value)
     
         return render(request, 'repair_approved.html', {'repair': repair})
@@ -275,7 +298,10 @@ def repair_declined(request):
         repair.is_declined = True
         repair.save()
 
+        Blockchain.objects.create()
+        count = Blockchain.objects.count()    
         hash_value = random.getrandbits(128)
+        print("block height: ", count)
         print("hash value: %032x" % hash_value)
     
         return render(request, 'repair_declined.html', {'repair': repair})
@@ -290,7 +316,11 @@ def police_approved(request):
         theft.is_approved = True
         theft.save()
 
+        Blockchain.objects.create()
+        count = Blockchain.objects.count()
+        print("block height: ", count)
         hash_value = random.getrandbits(128)
+        
         print("hash value: %032x" % hash_value)
     
         return render(request, 'police_approved.html', {'theft': theft})
@@ -304,7 +334,10 @@ def police_declined(request):
         theft = Theft.objects.get(id=theft_id)
         theft.is_declined = True
         theft.save()
-
+        
+        Blockchain.objects.create()
+        count = Blockchain.objects.count()
+        print("block height: ", count)
         hash_value = random.getrandbits(128)
         print("hash value: %032x" % hash_value)
     

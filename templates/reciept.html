@@ -18,6 +18,8 @@
                 <p>{{user.first_name}} {{user.last_name}}</p>
                 <p>{{user.email}}</p>
                 <p>{{user.phone}}</p>
+                <p>Start Date: {{ insurance.created_at|date:"M d, Y" }}</p>
+                <p>End Date: {{ insurance.end_date|date:"M d, Y" }}</p>
                 <img src="{{ insurance.product.image.url }}" width=100px>
             </div>
         </div>

@@ -76,6 +76,35 @@
             </form>
         {% endfor %}
 {% endif %}
+{% if is_completed %}
+        <h1>
+            Completed Insurance's
+        </h1>
+        
+        {% for completed in is_completed %}
+            <p>
+                {{ completed.product.name }}
+            </p>
+            <p>
+                {{ completed.product.price }}
+            </p>
+            <p>
+                {{ completed.description }}
+            </p>
+            <p>
+                {{ completed.claim_type }}
+            </p>
+            {% if completed.is_approved %}
+                <p>
+                    Approved
+                </p>
+            {% else %}
+                <p>
+                    Declined
+                </p>
+            {% endif %}
+        {% endfor %}
+{% endif %}
 <a href="/">Home</a>
 </body>
 </html>
