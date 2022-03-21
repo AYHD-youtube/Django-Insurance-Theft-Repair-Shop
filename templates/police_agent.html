@@ -19,14 +19,14 @@
                 {{ pending.insurance.product.price }}
             </p>
             <p>
-                {{ pending.insuranc.description }}
+                {{ pending.insurance.description }}
             </p>
             <form action="approved/" method="post">
-                <input type="hidden" name="repair_id" value="{{ pending.id }}">
+                <input type="hidden" name="theft_id" value="{{ pending.id }}">
                 <input type="submit" value="approved">
             </form>
             <form action="declined/" method="post">
-                <input type="hidden" name="repair_id" value="{{ pending.id }}">
+                <input type="hidden" name="theft_id" value="{{ pending.id }}">
                 <input type="submit" value="declined">
             </form>
         {% endfor %}

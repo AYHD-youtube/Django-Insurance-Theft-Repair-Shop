@@ -50,6 +50,8 @@ def buy_login(request):
             insurance = Insurance.objects.create(user=user, product=product, description='Bought product', end_date=end_date,
                     is_claimed=False, is_approved=False, is_declined=False, claim_type=None, duration=years)
             hash_value = random.getrandbits(128)
+            count = Insurance.objects.count() + Theft.objects.count() + Repair.objects.count()
+            print("block height: ", count)
             print("hash value: %032x" % hash_value)
             return render(request, 'register.html', {'user': user, 'insurance': insurance})        
         else:
@@ -101,19 +103,35 @@ def insurance_login(request):
         if user is not None:
             if user.is_insurance:
                 # all pending claim
-                is_pending = Insurance.objects.filter( is_claimed=True, is_approved=False, is_declined=False)
+                pending = list(Repair.objects.filter(is_approved=False, is_declined = False))+list(Theft.objects.filter(is_approved=False, is_declined = False))
+                is_pending = []
+                for p in pending:
+                    is_pending.append(p.insurance)
+
                 # all approved claim
                 # all theft and repair is_approved = True 
-                is_approved = list(Repair.objects.filter(is_approved=True))+list(Theft.objects.filter(is_approved=True))
-                for completed in range(len(is_approved)):
-                    is_approved[completed] = is_approved[completed].insurance
+                approved = list(Repair.objects.filter(is_approved=True))+list(Theft.objects.filter(is_approved=True))
+                for completed in range(len(approved)):
+                    approved[completed] = approved[completed].insurance
+                is_approved = []
+                for completed in range(len(approved)):
+                    if approved[completed].is_completed == False:
+                        is_approved.append(approved[completed])
+    
                 # all declined claim
-                is_declined = list(Repair.objects.filter(is_declined=True))+list(Theft.objects.filter(is_declined=True))
-                for declined in range(len(is_declined)):
-                    is_declined[declined] = is_declined[declined].insurance
+                completed = list(Repair.objects.filter(is_declined=True))+list(Theft.objects.filter(is_declined=True))
 
-                return render(request, 'insurance_agent.html', {'is_pending': is_pending, 'is_approved': is_approved, 'is_declined': is_declined})
+                for declined in range(len(completed)):
+                    completed[declined] = completed[declined].insurance
+                is_declined = []
+                for declined in range(len(completed)):
+                    if completed[declined].is_completed == False:
+                        is_declined.append(completed[declined])
 
+                # all completed claim
+                is_completed = Insurance.objects.filter(is_completed=True)
+
+                return render(request, 'insurance.html', {'user': user, 'is_pending': is_pending, 'is_approved': is_approved, 'is_declined': is_declined, 'is_completed': is_completed})
             else:
                 # all pending claims
                 is_pending = Insurance.objects.filter(user=user, is_claimed=True, is_approved=False, is_declined=False)
@@ -158,6 +176,8 @@ def claim_submit(request):
                 is_approved=False, is_declined=False)
 
         hash_value = random.getrandbits(128)
+        count = Insurance.objects.count() + Theft.objects.count() + Repair.objects.count()
+        print("block height: ", count)
         print("hash value: %032x" % hash_value)
         
         return render(request, 'claim.html', {'insurance': insurance})
@@ -170,6 +190,7 @@ def insurance_disapprove(request):
         insurance_id = request.POST.get('insurance_id')
         insurance = Insurance.objects.get(id=insurance_id)
         insurance.is_declined = True
+        insurance.is_completed = True
         insurance.save()
         return render(request, 'disapproved.html', {'insurance': insurance})
     else:
@@ -181,6 +202,7 @@ def insurance_approve(request):
         insurance_id = request.POST.get('insurance_id')
         insurance = Insurance.objects.get(id=insurance_id)
         insurance.is_approved = True
+        insurance.is_completed = True
         insurance.save()
         return render(request, 'approved.html', {'insurance': insurance})
     else:

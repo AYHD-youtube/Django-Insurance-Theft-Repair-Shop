@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>
+    Repair Login
+</title>
+</head>
+<body>
+    <h1>
+        Repair Login Agent
+    </h1>
+    {% if error %}
+        <p>
+            {{ error }}
+        </p>
+    {% endif %}
+
+    <form action="login/" method="post">
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" />
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" />
+        <input type="submit" value="Login" />
+    </form>
+    <a href="/">Home</a>
+</body>
+</html>    

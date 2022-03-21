@@ -34,6 +34,7 @@ class Insurance (models.Model):
     claim_type = models.CharField(max_length=20, choices=CLAIM_TYPES, default=None, null=True)
     duration = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     end_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
@@ -44,6 +45,7 @@ class Repair (models.Model):
     description = models.TextField()
     is_approved = models.BooleanField(default=False)
     is_declined = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username

@@ -46,7 +46,7 @@
                 {{ approved.claim_type }}
             </p>
             <form action="approve/" method="post">
-                <input type="hidden" name="insurance_id" value="{{ pending.id }}">
+                <input type="hidden" name="insurance_id" value="{{ approved.id }}">
                 <input type="submit" value="Approve">
             </form>
         {% endfor %}
@@ -71,7 +71,7 @@
                 {{ declined.claim_type }}
             </p>
             <form action="disapprove/" method="post">
-                <input type="hidden" name="insurance_id" value="{{ pending.id }}">
+                <input type="hidden" name="insurance_id" value="{{ declined.id }}">
                 <input type="submit" value="Disapprove">
             </form>
         {% endfor %}

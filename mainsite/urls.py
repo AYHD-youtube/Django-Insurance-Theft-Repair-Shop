@@ -17,7 +17,6 @@ urlpatterns = [
     path('insurance/login/claim_insurance/', views.claim_insurance, name='claim_insurance'),
     path('insurance/login/claim_insurance/claim_submit/', views.claim_submit, name='claim_submit'),
     path('police/login/', views.police_login, name='police_login'),
-    path('police/login/solved/', views.solved, name='solved'),
     path('repair/login/', views.repair_login, name='repair_login'),
     path('repair/login/approved/', views.repair_approved, name='repair_approved'),
     path('repair/login/declined/', views.repair_declined, name='repair_declined'),
